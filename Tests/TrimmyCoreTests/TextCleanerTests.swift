@@ -177,6 +177,14 @@ struct TextCleanerTests {
     }
 
     @Test
+    func `flattens a wrapped exact command with ordinary arguments`() {
+        let config = TrimConfig(aggressiveness: .normal, preserveBlankLines: false, removeBoxDrawing: false)
+        #expect(self.cleaner.transformIfCommand("cat the\nother", config: config) == "cat the other")
+        let made = self.cleaner.transformIfCommand("make build release install\ncheck", config: config)
+        #expect(made == "make build release install check")
+    }
+
+    @Test
     func `ignores harmless multiline text`() {
         let config = TrimConfig(aggressiveness: .low, preserveBlankLines: false, removeBoxDrawing: true)
         let text = "Shopping list:\napples\noranges"

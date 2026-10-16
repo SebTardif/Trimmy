@@ -276,16 +276,24 @@ extension TextCleaner {
     }
 
     private func containsKnownCommandPrefix(in lines: [Substring]) -> Bool {
-        lines.contains { line in
+        let nonEmpty = lines.filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+        return nonEmpty.enumerated().contains { index, line in
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             guard let firstToken = trimmed.split(separator: " ").first else { return false }
-            let lower = firstToken.lowercased()
+            let original = String(firstToken)
+            let lower = original.lowercased()
             guard Self.knownCommandPrefixes.contains(where: {
                 Self.matchesKnownCommandPrefix(lower, prefix: $0, allowPrefix: true)
             }) else {
                 return false
             }
             if Self.exactOnlyCommandPrefixes.contains(lower) {
+                // A lowercase exact command on the first line is a shell line.
+                // `cat the` and `make build release install` stay commands.
+                // `Open the door`, and `go now` later in a sentence, do not.
+                if index == 0, original == lower {
+                    return true
+                }
                 return self.lineLooksLikeCommand(trimmed)
             }
             return true
