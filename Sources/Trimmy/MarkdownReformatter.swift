@@ -496,6 +496,9 @@ struct MarkdownReformatter {
     private static func isSplitMarkdownLink(previous: String, next: String) -> Bool {
         guard previous.hasSuffix("]"), next.hasPrefix("(") else { return false }
         guard let open = previous.lastIndex(of: "[") else { return false }
+        if open > previous.startIndex, previous[previous.index(before: open)] == "\\" {
+            return false
+        }
         let labelStart = previous.index(after: open)
         let labelEnd = previous.index(before: previous.endIndex)
         guard labelStart < labelEnd else { return false }
