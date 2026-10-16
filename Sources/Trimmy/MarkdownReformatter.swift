@@ -502,14 +502,46 @@ struct MarkdownReformatter {
         let label = previous[labelStart..<labelEnd]
         guard !label.isEmpty, !label.contains("]"), !label.contains("[") else { return false }
         let destination = next.dropFirst()
+        guard let close = destination.firstIndex(of: ")") else { return false }
+        return Self.markdownLinkInteriorIsValid(String(destination[..<close]))
+    }
+
+    /// The text inside `()` is a destination, or a destination plus a quoted title.
+    /// `https://example.com is only an example` is prose.
+    private static func markdownLinkInteriorIsValid(_ interior: String) -> Bool {
+        let trimmed = interior.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return false }
+        if trimmed.hasPrefix("<") {
+            guard let end = trimmed.firstIndex(of: ">") else { return false }
+            let after = trimmed[trimmed.index(after: end)...].drop(while: \.isWhitespace)
+            if after.isEmpty {
+                return true
+            }
+            return Self.isQuotedTitle(String(after))
+        }
+        let parts = trimmed.split(separator: " ", maxSplits: 1, omittingEmptySubsequences: true)
+        guard let destination = parts.first, Self.isMarkdownDestination(String(destination)) else {
+            return false
+        }
+        if parts.count == 1 {
+            return true
+        }
+        return Self.isQuotedTitle(String(parts[1]))
+    }
+
+    private static func isQuotedTitle(_ text: String) -> Bool {
+        guard text.count >= 2, let first = text.first, first == "\"" || first == "'" else { return false }
+        return text.last == first
+    }
+
+    private static func isMarkdownDestination(_ destination: String) -> Bool {
+        guard !destination.isEmpty, !destination.contains(" ") else { return false }
         if destination.hasPrefix("http://") || destination.hasPrefix("https://")
             || destination.hasPrefix("/") || destination.hasPrefix("#")
         {
             return true
         }
-        guard let close = destination.firstIndex(of: ")") else { return false }
-        let target = destination[..<close]
-        return !target.isEmpty && !target.contains(" ") && (target.contains(".") || target.contains("/"))
+        return destination.contains(".") || destination.contains("/")
     }
 
     private static func startsWithAlphaNumeric(_ text: String) -> Bool {
