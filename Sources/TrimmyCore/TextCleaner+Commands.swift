@@ -368,15 +368,19 @@ extension TextCleaner {
             of: #"(?<=[A-Za-z0-9._~-])-\s*\n\s*([A-Za-z0-9._~-])"#,
             with: "-$1",
             options: .regularExpression)
+        // Join a one-character fragment onto the identifier it continues (`N` / `ODE_PATH`).
+        // Do not glue two finished tokens (`FOO` / `BAR`, `FILE1` / `FILE2`).
         result = result.replacingOccurrences(
-            of: #"(?<!\n)([A-Z0-9_.-])\s*\n\s*(?!-)([A-Z0-9_.-])(?!\n)"#,
+            of: #"(?<!\n)(?<![A-Z0-9_.-])([A-Z0-9_.-])\s*\n\s*(?!-)([A-Z0-9_.-])(?=[A-Z0-9_.-])"#,
             with: "$1$2",
             options: .regularExpression)
         result = result.replacingOccurrences(
             of: #"(?<=[/~])\s*\n\s*([A-Za-z0-9._-])"#,
             with: "$1",
             options: .regularExpression)
-        result = result.replacingOccurrences(of: #"\\\s*\n"#, with: " ", options: .regularExpression)
+        // A shell continuation deletes the backslash and the newline. A space remains only
+        // when the next line already has one, as in an indented flag.
+        result = result.replacingOccurrences(of: #"\\\s*\n"#, with: "", options: .regularExpression)
         result = result.replacingOccurrences(of: #"\n+"#, with: " ", options: .regularExpression)
         result = result.replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
         return result.trimmingCharacters(in: .whitespacesAndNewlines)
