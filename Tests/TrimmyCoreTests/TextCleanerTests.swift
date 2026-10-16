@@ -156,6 +156,26 @@ struct TextCleanerTests {
         #expect(self.cleaner.transformIfCommand(text, config: config) == "echo a echo b")
     }
 
+    @Test(arguments: [
+        "show the dashboard\nthen click save",
+        "Open the door\nand walk in",
+        "Make a note\nfor later",
+        "Google the error\nthen retry",
+        "Share the notes\nwith the team",
+        "Cat videos are fun\nwatch later",
+        "should we\ngo now",
+    ])
+    func `does not flatten prose that only shares a command prefix`(text: String) {
+        let config = TrimConfig(aggressiveness: .normal, preserveBlankLines: false, removeBoxDrawing: false)
+        #expect(self.cleaner.transformIfCommand(text, config: config) == nil)
+    }
+
+    @Test
+    func `still flattens make when it is the command`() {
+        let config = TrimConfig(aggressiveness: .normal, preserveBlankLines: false, removeBoxDrawing: false)
+        #expect(self.cleaner.transformIfCommand("make clean\nmake test", config: config) == "make clean make test")
+    }
+
     @Test
     func `ignores harmless multiline text`() {
         let config = TrimConfig(aggressiveness: .low, preserveBlankLines: false, removeBoxDrawing: true)

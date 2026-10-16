@@ -16,6 +16,11 @@ struct PromptBoundaryTests {
         #expect(self.cleaner.stripPromptPrefixes(text) == nil)
     }
 
+    @Test(arguments: ["$ show me the docs", "$ going home now"])
+    func `does not strip a dollar prompt from an ordinary word`(text: String) {
+        #expect(self.cleaner.stripPromptPrefixes(text) == nil)
+    }
+
     @Test(arguments: [
         ("$ git status", "git status"),
         ("$ gitk", "gitk"),

@@ -102,6 +102,22 @@ struct ClaudeCodePromptTests {
 
     // MARK: - Negative cases
 
+    @Test(arguments: [
+        "/etc hosts file notes\nDo not delete it.",
+        "/Users\nsebastien",
+    ])
+    func `does not flatten a filesystem path as a slash command`(text: String) {
+        #expect(self.cleaner.stripClaudeCodeDecoration(text, enabled: true) == nil)
+        let config = TrimConfig(
+            aggressiveness: .low,
+            preserveBlankLines: false,
+            removeBoxDrawing: false,
+            flattenClaudeCodePrompts: true)
+        let result = self.cleaner.transform(text, config: config)
+        #expect(result.wasTransformed == false)
+        #expect(result.trimmed == text)
+    }
+
     @Test
     func `does not flatten plain terminal wrapped text`() {
         let text = """
