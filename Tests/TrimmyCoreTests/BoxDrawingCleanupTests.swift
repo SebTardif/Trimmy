@@ -86,5 +86,9 @@ struct BoxDrawingCleanupTests {
             "git clone git@example.com:org/repo.git")
         #expect(TextCleaner.stripBoxDrawingCharacters(in: "git clone example.com: │ org/repo.git") ==
             "git clone example.com:org/repo.git")
+        #expect(TextCleaner.stripBoxDrawingCharacters(in: "git clone example.com: │ repo.git") ==
+            "git clone example.com:repo.git")
+        #expect(TextCleaner.stripBoxDrawingCharacters(in: "git clone buildbox: │ org/repo.git") ==
+            "git clone buildbox:org/repo.git")
     }
 }

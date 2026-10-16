@@ -2,7 +2,7 @@
 
 ## 0.11.3 — Unreleased
 
-- Text cleanup: removing a box-drawing gutter no longer deletes the newlines around it. A label such as "Note:" keeps the space before the next word. A wrapped URL path such as "releases/ │ download" still joins. A Git remote written as host:path still joins when the gutter sits after the colon, with or without a username.
+- Text cleanup: removing a box-drawing gutter no longer deletes the newlines around it. A label such as "Note:" keeps the space before the next word. A wrapped URL path such as "releases/ │ download" still joins. A Git remote written as host:path still joins when the gutter sits after the colon, with or without a username, a dotted host, or a slash in the path.
 
 ## 0.11.2 — 2026-09-22
 
