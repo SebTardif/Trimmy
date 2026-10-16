@@ -71,4 +71,18 @@ struct BoxDrawingCleanupTests {
         let cleaned = TextCleaner.stripBoxDrawingCharacters(in: "Note: │ hello")
         #expect(cleaned == "Note: hello")
     }
+
+    @Test
+    func `a nonbreaking space around a gutter is still removed`() {
+        let cleaned = TextCleaner.stripBoxDrawingCharacters(in: "curl |\u{00A0}│\u{00A0}head")
+        #expect(cleaned == "curl | head")
+    }
+
+    @Test
+    func `a uri colon still joins across a gutter`() {
+        #expect(TextCleaner.stripBoxDrawingCharacters(in: "mailto: │ user@example.com") ==
+            "mailto:user@example.com")
+        #expect(TextCleaner.stripBoxDrawingCharacters(in: "git clone git@example.com: │ org/repo.git") ==
+            "git clone git@example.com:org/repo.git")
+    }
 }

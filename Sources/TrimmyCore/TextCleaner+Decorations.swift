@@ -64,28 +64,39 @@ extension TextCleaner {
             }
         }
 
-        let boxAfterPipePattern = #"\|[ \t]*\#(boxDrawingCharacterClass)+[ \t]*"#
+        // Horizontal whitespace includes NBSP, and excludes line breaks.
+        let boxAfterPipePattern = #"\|[^\S\r\n]*\#(boxDrawingCharacterClass)+[^\S\r\n]*"#
         result = result.replacingOccurrences(
             of: boxAfterPipePattern,
             with: "| ",
             options: .regularExpression)
 
-        // Join a wrapped URL path (`releases/ │ download`). A colon label such as
-        // `Note: │ hello` is not a URL, so it keeps the space from the mid-token pass.
-        let boxPathJoinPattern = #"(/)[ \t]*\#(boxDrawingCharacterClass)+[ \t]*([A-Za-z0-9])"#
+        // Join a wrapped URL path (`releases/ │ download`). A colon joins only for
+        // `mailto:` or `user@host:`, not for a label such as `Note:`.
+        let boxPathJoinPattern = #"(/)[^\S\r\n]*\#(boxDrawingCharacterClass)+[^\S\r\n]*([A-Za-z0-9])"#
         result = result.replacingOccurrences(
             of: boxPathJoinPattern,
             with: "$1$2",
             options: .regularExpression)
+        let boxMailtoJoinPattern = #"(mailto:)[^\S\r\n]*\#(boxDrawingCharacterClass)+[^\S\r\n]*([A-Za-z0-9])"#
+        result = result.replacingOccurrences(
+            of: boxMailtoJoinPattern,
+            with: "$1$2",
+            options: .regularExpression)
+        let boxRemoteJoinPattern = #"(@[A-Za-z0-9.-]+:)[^\S\r\n]*\#(boxDrawingCharacterClass)+[^\S\r\n]*([A-Za-z0-9])"#
+        result = result.replacingOccurrences(
+            of: boxRemoteJoinPattern,
+            with: "$1$2",
+            options: .regularExpression)
 
-        let boxMidTokenPattern = #"(\S)[ \t]*\#(boxDrawingCharacterClass)+[ \t]*(\S)"#
+        let boxMidTokenPattern = #"(\S)[^\S\r\n]*\#(boxDrawingCharacterClass)+[^\S\r\n]*(\S)"#
         result = result.replacingOccurrences(
             of: boxMidTokenPattern,
             with: "$1 $2",
             options: .regularExpression)
 
         result = result.replacingOccurrences(
-            of: #"[ \t]*\#(self.boxDrawingCharacterClass)+[ \t]*"#,
+            of: #"[^\S\r\n]*\#(self.boxDrawingCharacterClass)+[^\S\r\n]*"#,
             with: " ",
             options: .regularExpression)
 
