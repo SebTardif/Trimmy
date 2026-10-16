@@ -67,11 +67,22 @@ struct TrimmyCLI {
                 exit(3)
             }
         } else {
-            FileHandle.standardOutput.write(Data(result.trimmed.utf8))
-            FileHandle.standardOutput.write(Data([0x0A]))
+            let rendered = Self.textOutput(for: result.trimmed)
+            FileHandle.standardOutput.write(Data(rendered.utf8))
+            exit(Self.textExitCode(input: input, rendered: rendered))
         }
 
         exit(result.transformed ? 0 : 2)
+    }
+
+    /// Text mode ends with one newline. A result that already ends with one is not given another.
+    static func textOutput(for trimmed: String) -> String {
+        trimmed.hasSuffix("\n") ? trimmed : trimmed + "\n"
+    }
+
+    /// Exit 2 means the bytes written are the input. Adding a missing final newline is a change.
+    static func textExitCode(input: String, rendered: String) -> Int32 {
+        rendered == input ? 2 : 0
     }
 
     static func readInput(
@@ -113,10 +124,13 @@ struct TrimmyCLI {
           --help, -h                 Show help
 
         Exit codes:
-          0  transformation applied
+          0  stdout differs from the input
           1  invalid arguments / no input / error reading
-          2  no transformation applied (for callers who need to detect changes)
+          2  stdout matches the input
           3  JSON encoding error
+
+        Text output ends with a newline. One is added only when the trimmed text
+        does not already end with one. JSON still uses exit 2 when nothing was trimmed.
         """
     }
 }

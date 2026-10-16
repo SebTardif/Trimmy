@@ -36,6 +36,16 @@ struct TrimmyCLITests {
     }
 
     @Test
+    func `text output keeps an existing newline and reports unchanged bytes`() {
+        #expect(TrimmyCLI.textOutput(for: "hello\n") == "hello\n")
+        #expect(TrimmyCLI.textOutput(for: "hello") == "hello\n")
+        #expect(TrimmyCLI.textExitCode(input: "hello\n", rendered: "hello\n") == 2)
+        #expect(TrimmyCLI.textExitCode(input: "hello", rendered: "hello\n") == 0)
+        let doubled = "hello\n\n"
+        #expect(TrimmyCLI.textExitCode(input: doubled, rendered: TrimmyCLI.textOutput(for: "hello\n")) == 0)
+    }
+
+    @Test
     func `no change single line`() {
         let input = "single line"
         let result = cliTrim(input, settings: CLISettings(), force: false)
