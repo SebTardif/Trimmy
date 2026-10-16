@@ -474,11 +474,21 @@ struct MarkdownReformatter {
                 result = trimmed
                 continue
             }
-            let shouldElideSpace = result.hasSuffix("-") && self.startsWithAlphaNumeric(trimmed)
+            let attachedHyphen = self.hyphenIsAttachedToPreviousWord(result)
+                && self.startsWithAlphaNumeric(trimmed)
+            let brokenLink = result.hasSuffix("]") && trimmed.hasPrefix("(")
+            let shouldElideSpace = attachedHyphen || brokenLink
             result += shouldElideSpace ? "" : " "
             result += trimmed
         }
         return self.collapseWhitespace(result)
+    }
+
+    /// `well-` continues a word. A hyphen that is its own token (`dash -`) does not.
+    private static func hyphenIsAttachedToPreviousWord(_ text: String) -> Bool {
+        guard text.hasSuffix("-"), text.count >= 2 else { return false }
+        let previous = text[text.index(text.endIndex, offsetBy: -2)]
+        return previous.isLetter || previous.isNumber
     }
 
     private static func startsWithAlphaNumeric(_ text: String) -> Bool {

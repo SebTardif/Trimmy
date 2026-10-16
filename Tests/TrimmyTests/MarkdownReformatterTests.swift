@@ -262,6 +262,41 @@ struct MarkdownReformatterTests {
         #expect(!MarkdownReformatter.isLikelyReflowable(input))
     }
 
+    @Test
+    func `reflow keeps a free standing hyphen separate`() {
+        let input = """
+        Please do not use the final trailing dash -
+        option when you invoke this command today please
+        """
+        #expect(MarkdownReformatter.isLikelyReflowable(input))
+        #expect(MarkdownReformatter.reformat(input) ==
+            "Please do not use the final trailing dash - option when you invoke this command today please")
+    }
+
+    @Test
+    func `reflow still joins a hyphen attached to the previous word`() {
+        let input = """
+        This deliberately long wrapped sentence ends with the compound well-
+        known result that should stay one word today please
+        """
+        let expected = "This deliberately long wrapped sentence ends with the compound well-known "
+            + "result that should stay one word today please"
+        #expect(MarkdownReformatter.reformat(input) == expected)
+    }
+
+    @Test
+    func `reflow keeps a markdown link split after the label`() {
+        let input = """
+        Read the project notes in the [documentation]
+        (https://example.com/guide) before you continue with the setup
+        and then keep this paragraph long enough to reflow cleanly
+        """
+        #expect(MarkdownReformatter.isLikelyReflowable(input))
+        let reformatted = MarkdownReformatter.reformat(input)
+        #expect(reformatted.contains("[documentation](https://example.com/guide)"))
+        #expect(!reformatted.contains("[documentation] ("))
+    }
+
     @Test(arguments: [
         "name,description,enabled\nexample,A deliberately long description with many words,true\n"
             + "other,Another value,false",
