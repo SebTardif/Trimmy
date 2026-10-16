@@ -88,6 +88,16 @@ extension TextCleaner {
             of: boxRemoteJoinPattern,
             with: "$1$2",
             options: .regularExpression)
+        // `host:path` with no username. A dot in the host keeps `Note:` spaced.
+        let boxHostPathJoinPattern = [
+            #"([A-Za-z0-9.-]+\.[A-Za-z0-9.-]+:)[^\S\r\n]*"#,
+            boxDrawingCharacterClass,
+            #"+[^\S\r\n]*([A-Za-z0-9._~-]+/[A-Za-z0-9._~-]+)"#,
+        ].joined()
+        result = result.replacingOccurrences(
+            of: boxHostPathJoinPattern,
+            with: "$1$2",
+            options: .regularExpression)
 
         let boxMidTokenPattern = #"(\S)[^\S\r\n]*\#(boxDrawingCharacterClass)+[^\S\r\n]*(\S)"#
         result = result.replacingOccurrences(
