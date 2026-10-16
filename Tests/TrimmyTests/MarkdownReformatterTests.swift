@@ -386,6 +386,41 @@ struct MarkdownReformatterTests {
     }
 
     @Test
+    func `reflow keeps a space when a split link is inside inline code`() {
+        let input = """
+        This deliberately long sentence describes the literal code `[documentation]
+        (https://example.com/guide)` and continues with ordinary prose today
+        """
+        #expect(MarkdownReformatter.isLikelyReflowable(input))
+        let reformatted = MarkdownReformatter.reformat(input)
+        #expect(reformatted.contains("`[documentation] (https://example.com/guide)`"))
+        #expect(!reformatted.contains("`[documentation](https://example.com/guide)`"))
+
+        let doubled = """
+        This deliberately long sentence describes the literal code ``[documentation]
+        (https://example.com/guide)`` and continues with ordinary prose today
+        """
+        #expect(MarkdownReformatter.isLikelyReflowable(doubled))
+        let doubledResult = MarkdownReformatter.reformat(doubled)
+        #expect(doubledResult.contains("``[documentation] (https://example.com/guide)``"))
+        #expect(!doubledResult.contains("``[documentation](https://example.com/guide)``"))
+    }
+
+    @Test
+    func `reflow still joins a link after a closed inline code span`() {
+        let input = """
+        Read the project notes in `code` and the [documentation]
+        (https://example.com/guide) before you continue with the setup
+        and then keep this paragraph long enough to reflow cleanly
+        """
+        #expect(MarkdownReformatter.isLikelyReflowable(input))
+        let reformatted = MarkdownReformatter.reformat(input)
+        #expect(reformatted.contains("`code`"))
+        #expect(reformatted.contains("[documentation](https://example.com/guide)"))
+        #expect(!reformatted.contains("[documentation] ("))
+    }
+
+    @Test
     func `reflow joins a link whose url contains parentheses`() {
         let input = """
         Read the project notes in the [documentation]

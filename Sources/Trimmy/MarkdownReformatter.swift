@@ -476,7 +476,9 @@ struct MarkdownReformatter {
             }
             let attachedHyphen = self.hyphenIsAttachedToPreviousWord(result)
                 && self.startsWithAlphaNumeric(trimmed)
-            let shouldElideSpace = attachedHyphen || self.isSplitMarkdownLink(previous: result, next: trimmed)
+            let splitLink = self.isSplitMarkdownLink(previous: result, next: trimmed)
+                && !self.inlineCodeIsOpen(atEndOf: result)
+            let shouldElideSpace = attachedHyphen || splitLink
             result += shouldElideSpace ? "" : " "
             result += trimmed
         }
@@ -489,6 +491,46 @@ struct MarkdownReformatter {
         guard text.hasSuffix("-"), text.count >= 2 else { return false }
         let previous = text[text.index(text.endIndex, offsetBy: -2)]
         return !previous.isWhitespace
+    }
+
+    /// True when `text` ends inside a backtick span, so a later `](` is literal.
+    /// The closing run has to match the opening run. A backslash escapes the next
+    /// character only outside a span.
+    private static func inlineCodeIsOpen(atEndOf text: String) -> Bool {
+        var index = text.startIndex
+        while index < text.endIndex {
+            if text[index] == "\\" {
+                let next = text.index(after: index)
+                guard next < text.endIndex else { return false }
+                index = text.index(after: next)
+                continue
+            }
+            guard text[index] == "`" else {
+                index = text.index(after: index)
+                continue
+            }
+            let runEnd = text[index...].prefix(while: { $0 == "`" }).endIndex
+            let length = text.distance(from: index, to: runEnd)
+            var cursor = runEnd
+            var closed = false
+            while cursor < text.endIndex {
+                if text[cursor] != "`" {
+                    cursor = text.index(after: cursor)
+                    continue
+                }
+                let closeEnd = text[cursor...].prefix(while: { $0 == "`" }).endIndex
+                if text.distance(from: cursor, to: closeEnd) == length {
+                    index = closeEnd
+                    closed = true
+                    break
+                }
+                cursor = closeEnd
+            }
+            if !closed {
+                return true
+            }
+        }
+        return false
     }
 
     /// Join `]` and `(` only when they are a real link, not a literal bracket
