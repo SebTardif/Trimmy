@@ -149,6 +149,23 @@ struct TextCleanerTests {
         #expect(self.cleaner.repairWrappedURL(text) == nil)
     }
 
+    @Test(arguments: [
+        "https://example.com please",
+        "https://example.com/docs\nLet me know",
+    ])
+    func `repair wrapped URL leaves a following word`(text: String) {
+        #expect(self.cleaner.repairWrappedURL(text) == nil)
+        let config = TrimConfig(aggressiveness: .low, preserveBlankLines: false, removeBoxDrawing: false)
+        let result = self.cleaner.transform(text, config: config)
+        #expect(result.wasTransformed == false)
+        #expect(result.trimmed == text)
+    }
+
+    @Test
+    func `repair wrapped URL joins a host split across lines`() {
+        #expect(self.cleaner.repairWrappedURL("https://exam\nple.com") == "https://example.com")
+    }
+
     @Test
     func `collapses blank lines when not preserved`() {
         let config = TrimConfig(aggressiveness: .high, preserveBlankLines: false, removeBoxDrawing: true)

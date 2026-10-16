@@ -44,11 +44,10 @@ extension TextCleaner {
         guard schemeCount == 1 else { return nil }
         guard lowercased.hasPrefix("http://") || lowercased.hasPrefix("https://") else { return nil }
 
-        let collapsed = trimmed.replacingOccurrences(
-            of: #"\s+"#,
-            with: "",
-            options: .regularExpression)
+        let pieces = trimmed.split(whereSeparator: \.isWhitespace).map(String.init)
+        guard pieces.count >= 2, Self.piecesAreOneWrappedURL(pieces) else { return nil }
 
+        let collapsed = pieces.joined()
         guard collapsed != trimmed else { return nil }
 
         let validURLPattern = #"^https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+$"#
@@ -56,6 +55,36 @@ extension TextCleaner {
 
         return collapsed
     }
+
+    /// Whitespace belongs inside one URL when each later piece continues a broken token.
+    /// `bar= two` continues the value. `https://example.com please` does not.
+    private static func piecesAreOneWrappedURL(_ pieces: [String]) -> Bool {
+        let piecePattern = #"^[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+$"#
+        guard pieces.allSatisfy({ $0.range(of: piecePattern, options: .regularExpression) != nil }) else {
+            return false
+        }
+
+        var accumulated = ""
+        for (index, piece) in pieces.enumerated() {
+            if index > 0, Self.wrappedURLIsComplete(accumulated), Self.isSeparateWord(piece) {
+                return false
+            }
+            accumulated += piece
+        }
+        return true
+    }
+
+    private static func wrappedURLIsComplete(_ text: String) -> Bool {
+        guard let url = URL(string: text), let host = url.host, !host.isEmpty else { return false }
+        guard let last = text.last else { return false }
+        return !Self.wrappedURLBreakMarkers.contains(last)
+    }
+
+    private static func isSeparateWord(_ piece: String) -> Bool {
+        piece.range(of: #"^[A-Za-z][A-Za-z'-]*$"#, options: .regularExpression) != nil
+    }
+
+    private static let wrappedURLBreakMarkers: Set<Character> = ["-", "=", "&", "?", "/", "%"]
 
     /// Quotes a filesystem path that contains spaces so it can be used directly in shell commands.
     /// Returns nil if no transformation is needed.
