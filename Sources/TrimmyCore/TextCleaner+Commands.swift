@@ -378,9 +378,10 @@ extension TextCleaner {
             of: #"(?<=[/~])\s*\n\s*([A-Za-z0-9._-])"#,
             with: "$1",
             options: .regularExpression)
-        // A shell continuation deletes the backslash and the newline. A space remains only
-        // when the next line already has one, as in an indented flag.
-        result = result.replacingOccurrences(of: #"\\\s*\n"#, with: "", options: .regularExpression)
+        // An immediate backslash-newline is deleted. Spaces between the backslash and
+        // the newline stay, so `echo foo\   ` / `bar` does not become `echofoobar`.
+        result = result.replacingOccurrences(of: #"\\[ \t]+\n"#, with: " ", options: .regularExpression)
+        result = result.replacingOccurrences(of: #"\\\n"#, with: "", options: .regularExpression)
         result = result.replacingOccurrences(of: #"\n+"#, with: " ", options: .regularExpression)
         result = result.replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
         return result.trimmingCharacters(in: .whitespacesAndNewlines)

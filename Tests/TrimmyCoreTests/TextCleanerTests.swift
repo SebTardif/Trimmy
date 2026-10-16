@@ -111,6 +111,7 @@ struct TextCleanerTests {
     func `backslash continuation inside a word does not insert a space`() {
         let config = TrimConfig(aggressiveness: .normal, preserveBlankLines: false, removeBoxDrawing: false)
         #expect(self.cleaner.transformIfCommand("echo very\\\nlong", config: config) == "echo verylong")
+        #expect(self.cleaner.transformIfCommand("echo foo\\   \nbar", config: config) == "echo foo bar")
     }
 
     @Test
