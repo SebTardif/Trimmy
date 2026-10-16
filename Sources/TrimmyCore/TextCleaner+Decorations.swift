@@ -88,8 +88,9 @@ extension TextCleaner {
             of: boxRemoteJoinPattern,
             with: "$1$2",
             options: .regularExpression)
-        // A dotted host joins in any case (`EXAMPLE.COM:`). A lowercase host
-        // joins even without a dot (`buildbox:`). `Note:` stays spaced.
+        // Dotted hosts join in any case. Lowercase and all-caps hosts join
+        // without a dot. Title case such as `Note:` stays spaced.
+        // `git@[2001:db8::1]:repo` joins at the colon after the bracket.
         let boxDottedHostJoinPattern = [
             #"(?<![A-Za-z0-9])([A-Za-z0-9][A-Za-z0-9.-]*\.[A-Za-z0-9.-]*:)[^\S\r\n]*"#,
             boxDrawingCharacterClass,
@@ -100,7 +101,22 @@ extension TextCleaner {
             boxDrawingCharacterClass,
             #"+[^\S\r\n]*([A-Za-z0-9._~/-]+)"#,
         ].joined()
-        for pattern in [boxDottedHostJoinPattern, boxPlainHostJoinPattern] {
+        let boxUpperHostJoinPattern = [
+            #"(?<![A-Za-z0-9])([A-Z][A-Z0-9-]+:)[^\S\r\n]*"#,
+            boxDrawingCharacterClass,
+            #"+[^\S\r\n]*([A-Za-z0-9._~/-]+)"#,
+        ].joined()
+        let boxIPv6JoinPattern = [
+            #"(\[[0-9A-Fa-f:]+\]:)[^\S\r\n]*"#,
+            boxDrawingCharacterClass,
+            #"+[^\S\r\n]*([A-Za-z0-9._~/-]+)"#,
+        ].joined()
+        for pattern in [
+            boxDottedHostJoinPattern,
+            boxPlainHostJoinPattern,
+            boxUpperHostJoinPattern,
+            boxIPv6JoinPattern,
+        ] {
             result = result.replacingOccurrences(
                 of: pattern,
                 with: "$1$2",
