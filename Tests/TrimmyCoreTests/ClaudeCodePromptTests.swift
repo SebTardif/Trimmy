@@ -102,6 +102,12 @@ struct ClaudeCodePromptTests {
 
     // MARK: - Negative cases
 
+    @Test
+    func `flattens a namespaced slash command that shares a directory name`() {
+        let text = "/run:test\n--verbose"
+        #expect(self.cleaner.stripClaudeCodeDecoration(text, enabled: true) == "/run:test --verbose")
+    }
+
     @Test(arguments: [
         "/etc hosts file notes\nDo not delete it.",
         "/Users\nsebastien",

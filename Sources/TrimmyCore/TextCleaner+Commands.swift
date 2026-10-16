@@ -226,11 +226,9 @@ extension TextCleaner {
         let startsWithKnown = Self.knownCommandPrefixes.contains {
             Self.matchesKnownCommandPrefix(firstToken, prefix: $0, allowPrefix: marker == "$")
         }
-        if Self.exactOnlyCommandPrefixes.contains(firstToken) {
-            guard self.lineLooksLikeCommand(trimmed) else { return false }
-        } else {
-            guard hasCommandPunctuation || startsWithKnown else { return false }
-        }
+        // Prompt stripping keeps a real command no matter how many arguments it has.
+        // Prose such as "show me the docs" still fails the known-prefix check.
+        guard hasCommandPunctuation || startsWithKnown else { return false }
         return self.isLikelyCommandLine(trimmed[...])
     }
 

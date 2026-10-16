@@ -168,7 +168,11 @@ extension TextCleaner {
             return false
         }
         let token = line.split(whereSeparator: \.isWhitespace).first.map(String.init) ?? line
-        let name = token.dropFirst().prefix(while: { $0 != ":" })
+        // `/run:test` is a namespaced slash command. Only a bare `/run` is a directory.
+        if token.contains(":") {
+            return true
+        }
+        let name = token.dropFirst()
         return !Self.filesystemDirectoryNames.contains(String(name))
     }
 
