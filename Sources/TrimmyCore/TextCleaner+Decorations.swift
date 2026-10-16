@@ -88,17 +88,24 @@ extension TextCleaner {
             of: boxRemoteJoinPattern,
             with: "$1$2",
             options: .regularExpression)
-        // Lowercase `host:path`, with or without a dot or a slash.
-        // `Note:` stays spaced because the label is not a lowercase host.
-        let boxHostPathJoinPattern = [
-            #"([a-z0-9][a-z0-9.-]*:)[^\S\r\n]*"#,
+        // A dotted host joins in any case (`EXAMPLE.COM:`). A lowercase host
+        // joins even without a dot (`buildbox:`). `Note:` stays spaced.
+        let boxDottedHostJoinPattern = [
+            #"(?<![A-Za-z0-9])([A-Za-z0-9][A-Za-z0-9.-]*\.[A-Za-z0-9.-]*:)[^\S\r\n]*"#,
             boxDrawingCharacterClass,
-            #"+[^\S\r\n]*([A-Za-z0-9._~-]*[./][A-Za-z0-9._~/-]*)"#,
+            #"+[^\S\r\n]*([A-Za-z0-9._~/-]+)"#,
         ].joined()
-        result = result.replacingOccurrences(
-            of: boxHostPathJoinPattern,
-            with: "$1$2",
-            options: .regularExpression)
+        let boxPlainHostJoinPattern = [
+            #"(?<![A-Za-z0-9])([a-z0-9][a-z0-9-]*:)[^\S\r\n]*"#,
+            boxDrawingCharacterClass,
+            #"+[^\S\r\n]*([A-Za-z0-9._~/-]+)"#,
+        ].joined()
+        for pattern in [boxDottedHostJoinPattern, boxPlainHostJoinPattern] {
+            result = result.replacingOccurrences(
+                of: pattern,
+                with: "$1$2",
+                options: .regularExpression)
+        }
 
         let boxMidTokenPattern = #"(\S)[^\S\r\n]*\#(boxDrawingCharacterClass)+[^\S\r\n]*(\S)"#
         result = result.replacingOccurrences(
