@@ -36,13 +36,73 @@ struct TrimmyCLITests {
     }
 
     @Test
-    func `text output keeps an existing newline and reports unchanged bytes`() {
-        #expect(TrimmyCLI.textOutput(for: "hello\n") == "hello\n")
-        #expect(TrimmyCLI.textOutput(for: "hello") == "hello\n")
-        #expect(TrimmyCLI.textExitCode(input: "hello\n", rendered: "hello\n") == 2)
-        #expect(TrimmyCLI.textExitCode(input: "hello", rendered: "hello\n") == 0)
-        let doubled = "hello\n\n"
-        #expect(TrimmyCLI.textExitCode(input: doubled, rendered: TrimmyCLI.textOutput(for: "hello\n")) == 0)
+    func `text mode adds one newline without treating it as a trim`() throws {
+        let unchanged = try Self.runTextCLI("hello\n")
+        #expect(unchanged.stdout == "hello\n")
+        #expect(unchanged.status == 2)
+
+        let added = try Self.runTextCLI("hello")
+        #expect(added.stdout == "hello\n")
+        #expect(added.status == 2)
+
+        let doubled = try Self.runTextCLI("hello\n\n")
+        #expect(doubled.stdout == "hello\n\n")
+        #expect(doubled.status == 2)
+
+        let trimmed = try Self.runTextCLI("echo hi\nls -la")
+        #expect(trimmed.stdout == "echo hi ls -la\n")
+        #expect(trimmed.status == 0)
+    }
+
+    private static func runTextCLI(_ input: String) throws -> (stdout: String, status: Int32) {
+        let process = Process()
+        process.executableURL = try Self.trimmyCLIURL()
+        let inputPipe = Pipe()
+        let outputPipe = Pipe()
+        process.standardInput = inputPipe
+        process.standardOutput = outputPipe
+        process.standardError = FileHandle.nullDevice
+        try process.run()
+        inputPipe.fileHandleForWriting.write(Data(input.utf8))
+        try inputPipe.fileHandleForWriting.close()
+        let data = outputPipe.fileHandleForReading.readDataToEndOfFile()
+        process.waitUntilExit()
+        guard let stdout = String(bytes: data, encoding: .utf8) else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+        return (stdout, process.terminationStatus)
+    }
+
+    private static func trimmyCLIURL() throws -> URL {
+        let root = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let build = root.appendingPathComponent(".build")
+        guard let enumerator = FileManager.default.enumerator(
+            at: build,
+            includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles])
+        else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+        var matches: [URL] = []
+        for case let url as URL in enumerator {
+            guard url.lastPathComponent == "TrimmyCLI", !url.path.contains(".dSYM") else { continue }
+            if FileManager.default.isExecutableFile(atPath: url.path) {
+                matches.append(url)
+            }
+        }
+        guard let url = matches.max(by: { left, right in
+            Self.modificationDate(left) < Self.modificationDate(right)
+        }) else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+        return url
+    }
+
+    private static func modificationDate(_ url: URL) -> Date {
+        (try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
     }
 
     @Test
