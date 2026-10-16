@@ -80,11 +80,21 @@ extension TextCleaner {
         return !Self.wrappedURLBreakMarkers.contains(last)
     }
 
+    /// A following token is prose when it is a word, including `thanks!` and `version2`.
+    /// `ple.com` and `path?foo=1` stay URL continuations.
     private static func isSeparateWord(_ piece: String) -> Bool {
-        piece.range(of: #"^[A-Za-z][A-Za-z'-]*$"#, options: .regularExpression) != nil
+        var core = piece
+        while let last = core.last, Self.trailingProsePunctuation.contains(last) {
+            core.removeLast()
+        }
+        guard let first = core.first, first.isLetter else { return false }
+        return core.allSatisfy { character in
+            character.isLetter || character.isNumber || character == "'" || character == "-"
+        }
     }
 
-    private static let wrappedURLBreakMarkers: Set<Character> = ["-", "=", "&", "?", "/", "%"]
+    private static let trailingProsePunctuation: Set<Character> = ["!", "?", ",", ".", ";", ":"]
+    private static let wrappedURLBreakMarkers: Set<Character> = ["-", "=", "&", "?", "/", "%", "#"]
 
     /// Quotes a filesystem path that contains spaces so it can be used directly in shell commands.
     /// Returns nil if no transformation is needed.
