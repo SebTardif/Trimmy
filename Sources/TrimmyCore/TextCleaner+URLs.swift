@@ -20,6 +20,9 @@ extension TextCleaner {
         guard lowered.hasPrefix("http://") || lowered.hasPrefix("https://") else { return nil }
         guard let components = URLComponents(string: trimmed) else { return nil }
         guard let queryIndex = trimmed.firstIndex(of: "?") else { return nil }
+        if let hashIndex = trimmed.firstIndex(of: "#"), hashIndex < queryIndex {
+            return nil
+        }
         let keeping = resolveKeeping(components.host ?? "")
         let head = trimmed[..<queryIndex]
         let remainder = trimmed[trimmed.index(after: queryIndex)...]
@@ -40,7 +43,11 @@ extension TextCleaner {
             kept = []
         } else {
             kept = parts.filter { part in
-                let nameSource = part.split(separator: "=", maxSplits: 1).first ?? Substring()
+                let nameSource: Substring = if let equals = part.firstIndex(of: "=") {
+                    part[..<equals]
+                } else {
+                    part
+                }
                 guard let name = String(nameSource).removingPercentEncoding else { return false }
                 return keeping.contains(name)
             }

@@ -9,7 +9,8 @@ struct LaunchAtLoginTests {
             throw CocoaError(.fileWriteUnknown)
         }
         #expect(change.enabled == false)
-        #expect(change.error?.isEmpty == false)
+        #expect(change.error?.contains("Start at Login") == true)
+        #expect(change.error?.contains("Login Items") == true)
     }
 
     @Test
@@ -44,7 +45,31 @@ struct LaunchAtLoginTests {
         fail.value = true
         settings.launchAtLogin = true
         #expect(settings.launchAtLogin == false)
-        #expect(settings.launchAtLoginError?.isEmpty == false)
+        #expect(settings.launchAtLoginError?.contains("Login Items") == true)
+    }
+
+    @MainActor
+    @Test
+    func `a launch failure does not rewrite the saved login preference`() {
+        let previousHook = LaunchAtLoginManager.setEnabledBody
+        let previousValue = UserDefaults.standard.object(forKey: "launchAtLogin")
+        defer {
+            LaunchAtLoginManager.setEnabledBody = previousHook
+            if let previousValue {
+                UserDefaults.standard.set(previousValue, forKey: "launchAtLogin")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "launchAtLogin")
+            }
+        }
+
+        UserDefaults.standard.set(true, forKey: "launchAtLogin")
+        LaunchAtLoginManager.setEnabledBody = { _ in
+            throw CocoaError(.fileWriteUnknown)
+        }
+        let settings = AppSettings()
+        #expect(settings.launchAtLogin == true)
+        #expect(UserDefaults.standard.bool(forKey: "launchAtLogin"))
+        #expect(settings.launchAtLoginError?.contains("Start at Login") == true)
     }
 }
 

@@ -80,7 +80,7 @@ public final class AppSettings: ObservableObject {
             try LaunchAtLoginManager.setEnabled(self.launchAtLogin)
             self.launchAtLoginError = nil
         } catch {
-            self.launchAtLoginError = error.localizedDescription
+            self.launchAtLoginError = LaunchAtLoginChange.recoveryMessage(for: error)
         }
     }
 
@@ -133,6 +133,11 @@ struct LaunchAtLoginChange: Equatable {
     var enabled: Bool
     var error: String?
 
+    static func recoveryMessage(for error: Error) -> String {
+        "Start at Login could not be changed (\(error.localizedDescription)). "
+            + "Try the toggle again, or allow Trimmy in System Settings, General, Login Items."
+    }
+
     static func applying(
         _ requested: Bool,
         previous: Bool,
@@ -142,7 +147,7 @@ struct LaunchAtLoginChange: Equatable {
             try perform(requested)
             return LaunchAtLoginChange(enabled: requested, error: nil)
         } catch {
-            return LaunchAtLoginChange(enabled: previous, error: error.localizedDescription)
+            return LaunchAtLoginChange(enabled: previous, error: self.recoveryMessage(for: error))
         }
     }
 }
