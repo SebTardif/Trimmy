@@ -8,9 +8,14 @@ extension TextCleaner {
         "perl", "bash", "zsh", "fish", "pwsh", "sh",
     ]
 
-    /// These names are also ordinary English words, so only an exact token counts.
+    /// These names are also ordinary English words, so a longer token matches
+    /// only when it is not one of those words. `$ lsblk` and `$ shuf` still match.
     private static let exactOnlyCommandPrefixes: Set<String> = [
         "go", "sh", "cat", "open", "make", "cd", "ls", "az",
+    ]
+
+    private static let prosePrefixTokens: Set<String> = [
+        "going", "google", "share", "should", "show",
     ]
 
     private static let proseSecondWords: Set<String> = [
@@ -23,7 +28,11 @@ extension TextCleaner {
             return token.hasPrefix(prefix)
         }
         if self.exactOnlyCommandPrefixes.contains(prefix) {
-            return token == prefix
+            if token == prefix {
+                return true
+            }
+            guard allowPrefix, token.hasPrefix(prefix) else { return false }
+            return !self.prosePrefixTokens.contains(token)
         }
         if allowPrefix {
             return token == prefix || token.hasPrefix(prefix)

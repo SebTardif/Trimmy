@@ -20,6 +20,8 @@ struct PromptBoundaryTests {
         ("$ go test ./... -v", "go test ./... -v"),
         ("$ cat the", "cat the"),
         ("$ make build release install", "make build release install"),
+        ("$ lsblk", "lsblk"),
+        ("$ shuf words", "shuf words"),
     ])
     func `strips a prompt from a real command with several arguments`(text: String, expected: String) {
         #expect(self.cleaner.stripPromptPrefixes(text) == expected)
