@@ -362,6 +362,18 @@ struct MarkdownReformatterTests {
     }
 
     @Test
+    func `reflow keeps a space after an escaped closing bracket`() {
+        let input = """
+        This deliberately long sentence describes the literal token [documentation\\]
+        (https://example.com/guide) and continues with ordinary prose today
+        """
+        #expect(MarkdownReformatter.isLikelyReflowable(input))
+        let reformatted = MarkdownReformatter.reformat(input)
+        #expect(reformatted.contains("[documentation\\] (https://example.com/guide)"))
+        #expect(!reformatted.contains("[documentation\\](https://example.com/guide)"))
+    }
+
+    @Test
     func `reflow keeps a space after an escaped bracket`() {
         let input = """
         This deliberately long sentence describes the literal token \\[documentation]

@@ -495,6 +495,10 @@ struct MarkdownReformatter {
     /// followed by a parenthetical sentence.
     private static func isSplitMarkdownLink(previous: String, next: String) -> Bool {
         guard previous.hasSuffix("]"), next.hasPrefix("(") else { return false }
+        let closeBracket = previous.index(before: previous.endIndex)
+        if closeBracket > previous.startIndex, previous[previous.index(before: closeBracket)] == "\\" {
+            return false
+        }
         guard let open = previous.lastIndex(of: "[") else { return false }
         if open > previous.startIndex, previous[previous.index(before: open)] == "\\" {
             return false
