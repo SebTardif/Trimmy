@@ -285,6 +285,32 @@ struct MarkdownReformatterTests {
     }
 
     @Test
+    func `reflow keeps a space when a bracket is not a link`() {
+        let input = """
+        This deliberately long sentence describes a literal closing bracket ]
+        (parentheses are covered later) in the same paragraph of ordinary prose
+        and then the last line can be shorter today
+        """
+        let reformatted = MarkdownReformatter.reformat(input)
+        #expect(reformatted.contains("bracket ] (parentheses"))
+        #expect(!reformatted.contains("bracket ](parentheses"))
+    }
+
+    @Test
+    func `reflow keeps a symbol suffix attached to a wrapped hyphen`() {
+        let cpp = """
+        This deliberately long sentence describes a C++-
+        based library used throughout the application today please
+        """
+        #expect(MarkdownReformatter.reformat(cpp).contains("C++-based"))
+        let csharp = """
+        This deliberately long sentence describes a C#-
+        compatible library used throughout the application today
+        """
+        #expect(MarkdownReformatter.reformat(csharp).contains("C#-compatible"))
+    }
+
+    @Test
     func `reflow keeps a markdown link split after the label`() {
         let input = """
         Read the project notes in the [documentation]

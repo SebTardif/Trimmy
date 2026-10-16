@@ -476,19 +476,40 @@ struct MarkdownReformatter {
             }
             let attachedHyphen = self.hyphenIsAttachedToPreviousWord(result)
                 && self.startsWithAlphaNumeric(trimmed)
-            let brokenLink = result.hasSuffix("]") && trimmed.hasPrefix("(")
-            let shouldElideSpace = attachedHyphen || brokenLink
+            let shouldElideSpace = attachedHyphen || self.isSplitMarkdownLink(previous: result, next: trimmed)
             result += shouldElideSpace ? "" : " "
             result += trimmed
         }
         return self.collapseWhitespace(result)
     }
 
-    /// `well-` continues a word. A hyphen that is its own token (`dash -`) does not.
+    /// A hyphen with no space before it stays attached (`well-`, `C++-`, `C#-`).
+    /// A hyphen that is its own token (`dash -`) does not.
     private static func hyphenIsAttachedToPreviousWord(_ text: String) -> Bool {
         guard text.hasSuffix("-"), text.count >= 2 else { return false }
         let previous = text[text.index(text.endIndex, offsetBy: -2)]
-        return previous.isLetter || previous.isNumber
+        return !previous.isWhitespace
+    }
+
+    /// Join `]` and `(` only when they are a real link, not a literal bracket
+    /// followed by a parenthetical sentence.
+    private static func isSplitMarkdownLink(previous: String, next: String) -> Bool {
+        guard previous.hasSuffix("]"), next.hasPrefix("(") else { return false }
+        guard let open = previous.lastIndex(of: "[") else { return false }
+        let labelStart = previous.index(after: open)
+        let labelEnd = previous.index(before: previous.endIndex)
+        guard labelStart < labelEnd else { return false }
+        let label = previous[labelStart..<labelEnd]
+        guard !label.isEmpty, !label.contains("]"), !label.contains("[") else { return false }
+        let destination = next.dropFirst()
+        if destination.hasPrefix("http://") || destination.hasPrefix("https://")
+            || destination.hasPrefix("/") || destination.hasPrefix("#")
+        {
+            return true
+        }
+        guard let close = destination.firstIndex(of: ")") else { return false }
+        let target = destination[..<close]
+        return !target.isEmpty && !target.contains(" ") && (target.contains(".") || target.contains("/"))
     }
 
     private static func startsWithAlphaNumeric(_ text: String) -> Bool {
