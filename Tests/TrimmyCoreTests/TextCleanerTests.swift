@@ -166,6 +166,12 @@ struct TextCleanerTests {
     @Test
     func `repair wrapped URL joins a host split across lines`() {
         #expect(self.cleaner.repairWrappedURL("https://exam\nple.com") == "https://example.com")
+        #expect(self.cleaner.repairWrappedURL("https://example.\ncom") == "https://example.com")
+    }
+
+    @Test
+    func `repair wrapped URL leaves a word after a finished trailing dot`() {
+        #expect(self.cleaner.repairWrappedURL("https://example.com.\nthanks") == nil)
     }
 
     @Test

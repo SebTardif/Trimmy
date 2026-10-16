@@ -76,8 +76,19 @@ extension TextCleaner {
 
     private static func wrappedURLIsComplete(_ text: String) -> Bool {
         guard let url = URL(string: text), let host = url.host, !host.isEmpty else { return false }
+        if Self.unfinishedSingleHostLabel(url) {
+            return false
+        }
         guard let last = text.last else { return false }
         return !Self.wrappedURLBreakMarkers.contains(last)
+    }
+
+    /// `https://example.` still needs the next host label. `https://example.com.` is finished.
+    private static func unfinishedSingleHostLabel(_ url: URL) -> Bool {
+        guard let host = url.host, host.hasSuffix(".") else { return false }
+        let labels = host.split(separator: ".", omittingEmptySubsequences: false)
+        guard labels.count == 2, labels[1].isEmpty, !labels[0].isEmpty else { return false }
+        return url.path.isEmpty && url.query == nil && url.fragment == nil
     }
 
     /// A following token is prose when it is a word, including `thanks!` and `version2`.
