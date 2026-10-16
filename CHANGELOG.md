@@ -2,6 +2,8 @@
 
 ## 0.11.3 — Unreleased
 
+- Text cleanup: removing a box-drawing gutter no longer deletes the newlines around it. A label such as "Note:" keeps the space before the next word. A wrapped URL path such as "releases/ │ download" still joins.
+
 ## 0.11.2 — 2026-09-22
 
 **Highlights:** Safer shell prompt cleanup, clearer CLI errors, and more reliable app updates.

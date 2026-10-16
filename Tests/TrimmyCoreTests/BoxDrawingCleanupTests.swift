@@ -53,4 +53,22 @@ struct BoxDrawingCleanupTests {
         let cleaned = TextCleaner.stripBoxDrawingCharacters(in: input)
         #expect(cleaned == nil, "No box glyphs present → keep original spacing")
     }
+
+    @Test
+    func `a box drawing line does not delete surrounding newlines`() {
+        let cleaned = TextCleaner.stripBoxDrawingCharacters(in: "keep\n\n│\n\nlines")
+        #expect(cleaned == "keep\n\n \n\nlines")
+    }
+
+    @Test
+    func `a gutter at the start of a line keeps the line break`() {
+        let cleaned = TextCleaner.stripBoxDrawingCharacters(in: "intro\n│ alpha\noutro")
+        #expect(cleaned == "intro\n alpha\noutro")
+    }
+
+    @Test
+    func `a colon label keeps a space before the next word`() {
+        let cleaned = TextCleaner.stripBoxDrawingCharacters(in: "Note: │ hello")
+        #expect(cleaned == "Note: hello")
+    }
 }

@@ -64,26 +64,28 @@ extension TextCleaner {
             }
         }
 
-        let boxAfterPipePattern = #"\|\s*\#(boxDrawingCharacterClass)+\s*"#
+        let boxAfterPipePattern = #"\|[ \t]*\#(boxDrawingCharacterClass)+[ \t]*"#
         result = result.replacingOccurrences(
             of: boxAfterPipePattern,
             with: "| ",
             options: .regularExpression)
 
-        let boxPathJoinPattern = #"([:/])\s*\#(boxDrawingCharacterClass)+\s*([A-Za-z0-9])"#
+        // Join a wrapped URL path (`releases/ │ download`). A colon label such as
+        // `Note: │ hello` is not a URL, so it keeps the space from the mid-token pass.
+        let boxPathJoinPattern = #"(/)[ \t]*\#(boxDrawingCharacterClass)+[ \t]*([A-Za-z0-9])"#
         result = result.replacingOccurrences(
             of: boxPathJoinPattern,
             with: "$1$2",
             options: .regularExpression)
 
-        let boxMidTokenPattern = #"(\S)\s*\#(boxDrawingCharacterClass)+\s*(\S)"#
+        let boxMidTokenPattern = #"(\S)[ \t]*\#(boxDrawingCharacterClass)+[ \t]*(\S)"#
         result = result.replacingOccurrences(
             of: boxMidTokenPattern,
             with: "$1 $2",
             options: .regularExpression)
 
         result = result.replacingOccurrences(
-            of: #"\s*\#(self.boxDrawingCharacterClass)+\s*"#,
+            of: #"[ \t]*\#(self.boxDrawingCharacterClass)+[ \t]*"#,
             with: " ",
             options: .regularExpression)
 
