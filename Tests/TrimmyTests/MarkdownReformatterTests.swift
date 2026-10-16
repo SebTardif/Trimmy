@@ -347,6 +347,33 @@ struct MarkdownReformatterTests {
         #expect(!reformatted.contains("[documentation] ("))
     }
 
+    @Test
+    func `reflow keeps a space when a parenthesized url is only an example`() {
+        let input = """
+        This deliberately long sentence describes the literal token [documentation]
+        (https://en.wikipedia.org/wiki/Function_(mathematics) is only an example) \
+        and continues with ordinary prose today
+        """
+        #expect(MarkdownReformatter.isLikelyReflowable(input))
+        let reformatted = MarkdownReformatter.reformat(input)
+        let kept = "[documentation] (https://en.wikipedia.org/wiki/Function_(mathematics) is only an example)"
+        #expect(reformatted.contains(kept))
+        #expect(!reformatted.contains("[documentation](https://en.wikipedia.org/wiki/Function_(mathematics)"))
+    }
+
+    @Test
+    func `reflow joins a link whose url contains parentheses`() {
+        let input = """
+        Read the project notes in the [documentation]
+        (https://en.wikipedia.org/wiki/Function_(mathematics)) before you continue with the setup
+        and then keep this paragraph long enough to reflow cleanly
+        """
+        let reformatted = MarkdownReformatter.reformat(input)
+        let joined = "[documentation](https://en.wikipedia.org/wiki/Function_(mathematics))"
+        #expect(reformatted.contains(joined))
+        #expect(!reformatted.contains("[documentation] ("))
+    }
+
     @Test(arguments: [
         "name,description,enabled\nexample,A deliberately long description with many words,true\n"
             + "other,Another value,false",

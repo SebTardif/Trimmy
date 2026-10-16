@@ -502,8 +502,34 @@ struct MarkdownReformatter {
         let label = previous[labelStart..<labelEnd]
         guard !label.isEmpty, !label.contains("]"), !label.contains("[") else { return false }
         let destination = next.dropFirst()
-        guard let close = destination.firstIndex(of: ")") else { return false }
+        guard let close = Self.matchingLinkClose(in: destination) else { return false }
         return Self.markdownLinkInteriorIsValid(String(destination[..<close]))
+    }
+
+    /// The closing `)` matches the link, not a parenthesis inside the URL.
+    private static func matchingLinkClose(in text: Substring) -> String.Index? {
+        var depth = 0
+        var quote: Character?
+        var index = text.startIndex
+        while index < text.endIndex {
+            let character = text[index]
+            if let active = quote {
+                if character == active {
+                    quote = nil
+                }
+            } else if character == "\"" || character == "'" {
+                quote = character
+            } else if character == "(" {
+                depth += 1
+            } else if character == ")" {
+                if depth == 0 {
+                    return index
+                }
+                depth -= 1
+            }
+            index = text.index(after: index)
+        }
+        return nil
     }
 
     /// The text inside `()` is a destination, or a destination plus a quoted title.
