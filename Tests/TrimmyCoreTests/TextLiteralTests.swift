@@ -23,13 +23,6 @@ struct TextLiteralTests {
     }
 
     @Test
-    func `path quoting preserves shell metacharacters literally`() {
-        let path = #"/tmp/$TRIMMY_FIXTURE `printf changed` \ "file".txt"#
-        let quoted = self.cleaner.quotePathWithSpaces(path)
-        #expect(quoted == #""/tmp/\$TRIMMY_FIXTURE \`printf changed\` \\ \"file\".txt""#)
-    }
-
-    @Test
     func `carriage return separated paths stay multiline`() {
         #expect(self.cleaner.quotePathWithSpaces("/tmp/My Files\r/second/path") == nil)
     }

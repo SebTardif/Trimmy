@@ -1,6 +1,8 @@
 # Changelog
 
-## 0.11.4 — Unreleased
+## 0.11.4 — 2026-10-21
+
+- Path quoting: quote only existing filesystem paths, preserving slash-containing prose and missing paths while supporting home-relative and relative paths with spaces (#57, thanks @SebTardif).
 
 ## 0.11.3 — 2026-10-20
 
