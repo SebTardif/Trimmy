@@ -116,7 +116,7 @@ extension TextCleaner {
     private static let trailingProsePunctuation: Set<Character> = ["!", "?", ",", ".", ";", ":"]
     private static let wrappedURLBreakMarkers: Set<Character> = ["-", "=", "&", "?", "%", "#"]
 
-    /// Quotes a filesystem path that contains spaces so it can be used directly in shell commands.
+    /// Quotes an existing filesystem path that contains spaces for use in shell commands.
     /// Returns nil if no transformation is needed.
     public func quotePathWithSpaces(_ text: String) -> String? {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -131,42 +131,13 @@ extension TextCleaner {
             return nil
         }
 
-        guard let firstToken = trimmed.split(
-            maxSplits: 1,
-            omittingEmptySubsequences: true,
-            whereSeparator: \.isWhitespace).first else { return nil }
-        let firstTokenText = String(firstToken)
-
-        // Skip URLs (even if they contain spaces)
-        guard !trimmed.contains("://") else { return nil }
-
-        // Must look like a path starting at the beginning:
-        // - Absolute (/), home-relative (~/), current-dir (./), parent-dir (..)
-        // - Or a relative path whose first token contains "/" (e.g., "folder/sub folder/file.txt")
-        let hasExplicitPathPrefix = firstTokenText.hasPrefix("/")
-            || firstTokenText.hasPrefix("~/")
-            || firstTokenText.hasPrefix("./")
-            || firstTokenText.hasPrefix("../")
-        let looksLikeRelativePath = firstTokenText.contains("/")
-
-        guard hasExplicitPathPrefix || looksLikeRelativePath else { return nil }
-
-        // Must contain at least one space that would cause shell issues
-        guard trimmed.contains(" ") else { return nil }
-
-        // Skip slash commands (e.g., "/skill:cmd args")
-        if trimmed.range(of: #"^/[A-Za-z0-9_-]+(:[A-Za-z0-9_-]+)?\s"#, options: .regularExpression) != nil {
-            return nil
-        }
-
-        // Skip if it looks like a command (has flags or multiple path-like segments separated by spaces)
-        // e.g., "ls -la /some/path" should not be quoted as a single path
-        if trimmed.range(of: #"\s--?[A-Za-z]"#, options: .regularExpression) != nil {
-            return nil
-        }
+        guard trimmed.contains(" "), !trimmed.contains("://") else { return nil }
 
         // Keep home expansion outside quotes; the rest of the path is literal shell data.
         let isHomeRelative = trimmed.hasPrefix("~/")
+        let resolvedPath = isHomeRelative ? (trimmed as NSString).expandingTildeInPath : trimmed
+        guard FileManager.default.fileExists(atPath: resolvedPath) else { return nil }
+
         let path = isHomeRelative ? String(trimmed.dropFirst(2)) : trimmed
         let escaped = path.replacingOccurrences(of: "\\", with: "\\\\")
             .replacingOccurrences(of: "\"", with: "\\\"")
