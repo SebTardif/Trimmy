@@ -2,6 +2,19 @@
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
   <channel>
     <item>
+      <title>0.11.5</title>
+      <pubDate>Wed, 21 Oct 2026 08:49:46 +0000</pubDate>
+      <sparkle:version>38</sparkle:version>
+      <sparkle:shortVersionString>0.11.5</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+      <description>&lt;pre&gt;- CLI: keep the standalone version synchronized with the app version and reject stale versions in CI before release.
+
+- Path quoting: quote only existing filesystem paths, preserving slash-containing prose and missing paths while supporting home-relative and relative paths with spaces (#57, thanks @SebTardif).
+&lt;/pre&gt;</description>
+      <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.11.5/Trimmy-0.11.5.zip" length="2760615" type="application/octet-stream" sparkle:edSignature="8iZxe04cdfklusMR9dxqiPcmiC7NCuSyk0uzCKwZueCl/D9M8pchv9yaaPm9I3Q4nw3NrGfpK/eQmhpBZgpgCg==" />
+    </item>
+    <item>
       <title>0.11.3</title>
       <pubDate>Wed, 21 Oct 2026 03:22:36 +0000</pubDate>
       <sparkle:version>36</sparkle:version>
