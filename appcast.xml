@@ -1,148 +1,166 @@
-<?xml version="1.0" standalone="yes"?>
+<?xml version='1.0' encoding='utf-8'?>
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
-    <channel>
-        <item>
-            <title>0.11.2</title>
-            <pubDate>Tue, 22 Sep 2026 05:06:30 -0700</pubDate>
-            <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
-            <sparkle:version>35</sparkle:version>
-            <sparkle:shortVersionString>0.11.2</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <description><![CDATA[<h2>Trimmy 0.11.2</h2>
-<p><strong>Highlights:</strong> Safer shell prompt cleanup, clearer CLI errors, and more reliable app updates.</p>
-<ul>
-<li>Prompt cleanup: preserve shell variable references and Markdown headings whose words merely start with a command name.</li>
-</ul>
-<ul>
-<li>CLI: report file, stdin, and UTF-8 decoding failures with their input source instead of incorrectly claiming that no input was provided.</li>
-<li>URL cleanup: preserve content-identity parameters with percent-encoded names and leave URLs followed by other text untouched.</li>
-<li>Updates: upgrade Sparkle to 2.10.0 for macOS 27 delta-update compression fixes and better download progress handling.</li>
-</ul>
-<p><a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md">View full changelog</a></p>
-]]></description>
-            <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.11.2/Trimmy-0.11.2.zip" length="2740766" type="application/octet-stream" sparkle:edSignature="lu54SVUFvEeYBGuFHNcG/DRxlv0AgYjKSKE4ocknNdN7OASki9hJAsTG9YQRzjnNGG6KT/Bqx4BvLC6lrA6dBw=="/>
-        </item>
-        <item>
-            <title>0.11.1</title>
-            <pubDate>Sun, 13 Sep 2026 18:50:01 -0700</pubDate>
-            <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
-            <sparkle:version>34</sparkle:version>
-            <sparkle:shortVersionString>0.11.1</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <description><![CDATA[<h2>Trimmy 0.11.1</h2>
-<p><strong>Highlights:</strong> macOS 27-ready shortcuts, clipboard restores that never clobber a newer copy, and CLI stdin/argument fixes.</p>
-<ul>
-<li>Dependencies: update KeyboardShortcuts to 3.1.0 for macOS 27 compatibility, smoother menu highlighting, function-key handling, and shortcut recorder fixes.</li>
-<li>Clipboard: use the latest copy for manual pastes and preserve all clipboard formats when restoring, without overwriting a newer copy.</li>
-<li>Text reflow: preserve fenced content when a fence-like line has trailing text, and require valid Markdown numbered-list markers before rewriting lists.</li>
-<li>Text cleanup: preserve literal path characters and home expansion, keep placeholder-like text intact when preserving blank lines, and recognize CRLF/CR command continuations.</li>
-<li>Previews: mark removals correctly around emoji and inserted characters, and use the real cleanup engine for sensitivity examples.</li>
-<li>Shortcuts: keep cleared paste shortcuts unset across restarts and show recorded function keys and keyboard-layout equivalents correctly in the menu.</li>
-<li>CLI: correctly read <code>--trim -</code> from stdin, keep short options such as <code>-f</code> separate from file input, and report invalid arguments instead of silently ignoring them.</li>
-<li>CLI installer: keep the app responsive during authorization and install correctly from paths containing shell characters, without a shared temporary script.</li>
-<li>App lifecycle: release Accessibility polling and system copy-event hooks when their owners go away and disable Sparkle in signed development builds.</li>
-<li>Build compatibility: Swift 6.3 or later is now required because Swift 6.2.4 crashes while compiling the updated shortcut dependency&#x27;s isolated deinitializers; macOS 15 support is unchanged.</li>
-<li>Dependencies: update KeyboardShortcuts to 3.0.1 for Swift 6 concurrency and release-build fixes.</li>
-<li>Build: validate macOS and Linux with Swift 6.3 and 6.3.3, pin Actions and lint tools, and run portable text and packaging-script tests in CI.</li>
-<li>Website: remove stale release numbers from download and social-card labels and clarify that clipboard processing stays local.</li>
-<li>Development: reuse SwiftPM builds when packaging the debug app, simplify signed shortcut-resource packaging, and replace the obsolete Xcode project with the supported <code>Package.swift</code> workflow.</li>
-</ul>
-<p><a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md">View full changelog</a></p>
-]]></description>
-            <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.11.1/Trimmy-0.11.1.zip" length="2781031" type="application/octet-stream" sparkle:edSignature="sArVr/0RaXOtM3g+Qhy/OYS7rq9/mdr9xWSo5w5cehBLfFxjmXFIAjU27I+XnYahtxrG2LmbWeKU+91/K0y+DA=="/>
-        </item>
-        <item>
-            <title>0.11.0</title>
-            <pubDate>Mon, 07 Sep 2026 03:08:40 -0700</pubDate>
-            <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
-            <sparkle:version>33</sparkle:version>
-            <sparkle:shortVersionString>0.11.0</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <description><![CDATA[<h2>Trimmy 0.11.0</h2>
-<p><strong>Highlights:</strong> Optional automatic reflow for copied prose and Markdown.</p>
-<ul>
-<li>Join hard-wrapped prose and Markdown automatically with a new default-off setting, respecting app/site exclusions and preserving fenced examples before command cleanup (thanks @rewtraw).</li>
-<li>Expand the manual action to Paste Reflowed Text, with shared checks that leave recognized source code and configuration out of both reflow paths (thanks @rewtraw).</li>
-<li>Add optional removal of leading blank lines during reflow, disabled by default to preserve existing paste behavior (thanks @rewtraw).</li>
-</ul>
-<p><a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md">View full changelog</a></p>
-]]></description>
-            <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.11.0/Trimmy-0.11.0.zip" length="2705702" type="application/octet-stream" sparkle:edSignature="oCr2DbV0RzO7mPbDY7CGEHIynTJuO8MJ+GHqfNaU48BM5ixUHIMP3L8DoTcXWvx1dutFthFiLWIASfUkPFvMCQ=="/>
-        </item>
-        <item>
-            <title>0.10.2</title>
-            <pubDate>Sun, 06 Sep 2026 18:38:09 -0700</pubDate>
-            <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
-            <sparkle:version>32</sparkle:version>
-            <sparkle:shortVersionString>0.10.2</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <description><![CDATA[<h2>Trimmy 0.10.2</h2>
-<p><strong>Highlights:</strong> Safer automatic updates and clipboard handling.</p>
-<ul>
-<li>Dependencies: update Sparkle to 2.9.6 for installer security fixes and MenuBarExtraAccess to 1.3.1 for macOS 27 compatibility.</li>
-<li>Terminal detection now recognizes cmux by bundle identifier and app name, so copies use terminal-specific trimming (thanks @gustavosmendes).</li>
-<li>Preserve YAML block-scalar indentation during automatic trimming in the app and CLI (thanks @rewtraw).</li>
-<li>Dependencies: update KeyboardShortcuts to 2.4.0 for shortcut-recorder fixes while preserving Swift 6.2 compatibility.</li>
-<li>Build: validate macOS builds with Swift 6.2.4 while retaining Swift 6.2 and macOS 15 support.</li>
-</ul>
-<p><a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md">View full changelog</a></p>
-]]></description>
-            <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.10.2/Trimmy-0.10.2.zip" length="2698560" type="application/octet-stream" sparkle:edSignature="UtW+Y368KUZBXpp12CrmpcGiKG0JHhePPT3p0kX3ad/LywmVzkNGZYrDw5zevaBQcGnE8SpMeHYSUh+83GlfDg=="/>
-        </item>
-        <item>
-            <title>0.10.1</title>
-            <pubDate>Thu, 11 Jun 2026 09:50:47 +0100</pubDate>
-            <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
-            <sparkle:version>31</sparkle:version>
-            <sparkle:shortVersionString>0.10.1</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<h2>Trimmy 0.10.1</h2>
-<ul>
-<li>Settings: reorganize controls into focused General, Trimming, Rules, Shortcuts, Advanced, and About tabs, with low-frequency cleanup options under Advanced and a compact native macOS layout.</li>
-</ul>
-<p><a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md">View full changelog</a></p>
-]]></description>
-            <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.10.1/Trimmy-0.10.1.zip" length="2687415" type="application/octet-stream" sparkle:edSignature="SfG1mbQVjDbLr/pEMTKBWhgbVOT2YcWLDqdlDutIfRENpWZe0XRJ/Al2jBSC74pwP4IG8f5l6Iju6zA/TTdnAA=="/>
-        </item>
-        <item>
-            <title>0.10.0</title>
-            <pubDate>Thu, 11 Jun 2026 08:22:07 +0100</pubDate>
-            <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
-            <sparkle:version>30</sparkle:version>
-            <sparkle:shortVersionString>0.10.0</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<h2>Trimmy 0.10.0</h2>
-<ul>
-<li>Auto-trim can now be disabled for configured apps and browser sites while keeping manual paste actions available (#15).</li>
-<li>Menu: add an optional “Paste without Query Params” action for copied URLs, gated by Settings → General and preserving configured content-identity parameters (#27, thanks @danfooo).</li>
-<li>Menu paste-action badges now show a single clear character count instead of duplicate “trimmed” counters (#27, thanks @danfooo).</li>
-</ul>
-<p><a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md">View full changelog</a></p>
-]]></description>
-            <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.10.0/Trimmy-0.10.0.zip" length="2679478" type="application/octet-stream" sparkle:edSignature="xACHr2XqXIQIDeLFHQqRvg9FZC9UCtFzuvC50guWk/kxa2uDXYXpN6Fx8Pob9PIAIkELdkNu6Jm27VwxfWFcDw=="/>
-        </item>
-        <item>
-            <title>0.9.0</title>
-            <pubDate>Mon, 11 May 2026 12:56:20 +0100</pubDate>
-            <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
-            <sparkle:version>29</sparkle:version>
-            <sparkle:shortVersionString>0.9.0</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-            <description><![CDATA[<h2>Trimmy 0.9.0</h2>
-<ul>
-<li>Claude Code: add optional prompt-decoration flattening for copied slash commands while preserving ordinary wrapped prose (#19, thanks @evoleinik).</li>
-<li>Settings: add an option to hide the menu bar icon while keeping Trimmy running (#24, thanks @qazi0).</li>
-<li>Text cleanup: dedent copied prose where most paragraph lines share the same leading whitespace (#10, thanks @arunsathiya).</li>
-<li>Website: add a copy button for the Homebrew install command.</li>
-</ul>
-<p><a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md">View full changelog</a></p>
-]]></description>
-            <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.9.0/Trimmy-0.9.0.zip" length="2630308" type="application/octet-stream" sparkle:edSignature="2aCjCUymQxStjqJcjeIs0LcYjRZGTLA4I2UaTTfIKXscC7TDLkQPBG1t80Qzfpna+0npJMS/OS8Uw2XnxFFQBQ=="/>
-        </item>
-        <title>Trimmy</title>
-    </channel>
+  <channel>
+    <item>
+      <title>0.11.3</title>
+      <pubDate>Wed, 21 Oct 2026 03:22:36 +0000</pubDate>
+      <sparkle:version>36</sparkle:version>
+      <sparkle:shortVersionString>0.11.3</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+      <description>&lt;pre&gt;**Highlights:** Safer URL, shell-command, and Markdown cleanup without changing copied prose.
+
+- URL repair: preserve prose following a URL while retaining wrapped host, path, query, and fragment continuations (#58, thanks @SebTardif).
+- Text cleanup: preserve separate uppercase shell arguments and remove in-word backslash continuations without inserting a space (#59, thanks @SebTardif).
+- Text cleanup: preserve line breaks and prose spacing around box-drawing gutters, including Unicode separators and mixed-case remote hosts (#60, thanks @SebTardif).
+- Command detection: preserve prose that shares short command prefixes and filesystem notes such as `/etc`, while retaining real shell and namespaced slash commands (#61, thanks @SebTardif).
+- Text reflow: keep standalone hyphens spaced and rejoin wrapped Markdown links without changing inline code or parenthetical prose (#62, thanks @SebTardif).
+- Move macOS CI and release builds to `xcode-27` while preserving macOS 15 support, native SwiftPM builds, and Linux Swift 6.3/6.4 coverage.
+&lt;/pre&gt;</description>
+      <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.11.3/Trimmy-0.11.3.zip" length="2760638" type="application/octet-stream" sparkle:edSignature="jxEWzelF88jJ3hEa2cfhioNh+eibQgTU+Q3n21EklJmUVJUPhHSgnqfPeShJqk6aLw2Gm0eIuIt6PqAZoZfcBA==" />
+    </item>
+    <item>
+      <title>0.11.2</title>
+      <pubDate>Tue, 22 Sep 2026 05:06:30 -0700</pubDate>
+      <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
+      <sparkle:version>35</sparkle:version>
+      <sparkle:shortVersionString>0.11.2</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+      <description>&lt;h2&gt;Trimmy 0.11.2&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Highlights:&lt;/strong&gt; Safer shell prompt cleanup, clearer CLI errors, and more reliable app updates.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Prompt cleanup: preserve shell variable references and Markdown headings whose words merely start with a command name.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+&lt;li&gt;CLI: report file, stdin, and UTF-8 decoding failures with their input source instead of incorrectly claiming that no input was provided.&lt;/li&gt;
+&lt;li&gt;URL cleanup: preserve content-identity parameters with percent-encoded names and leave URLs followed by other text untouched.&lt;/li&gt;
+&lt;li&gt;Updates: upgrade Sparkle to 2.10.0 for macOS 27 delta-update compression fixes and better download progress handling.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md"&gt;View full changelog&lt;/a&gt;&lt;/p&gt;
+</description>
+      <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.11.2/Trimmy-0.11.2.zip" length="2740766" type="application/octet-stream" sparkle:edSignature="lu54SVUFvEeYBGuFHNcG/DRxlv0AgYjKSKE4ocknNdN7OASki9hJAsTG9YQRzjnNGG6KT/Bqx4BvLC6lrA6dBw==" />
+    </item>
+    <item>
+      <title>0.11.1</title>
+      <pubDate>Sun, 13 Sep 2026 18:50:01 -0700</pubDate>
+      <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
+      <sparkle:version>34</sparkle:version>
+      <sparkle:shortVersionString>0.11.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+      <description>&lt;h2&gt;Trimmy 0.11.1&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Highlights:&lt;/strong&gt; macOS 27-ready shortcuts, clipboard restores that never clobber a newer copy, and CLI stdin/argument fixes.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Dependencies: update KeyboardShortcuts to 3.1.0 for macOS 27 compatibility, smoother menu highlighting, function-key handling, and shortcut recorder fixes.&lt;/li&gt;
+&lt;li&gt;Clipboard: use the latest copy for manual pastes and preserve all clipboard formats when restoring, without overwriting a newer copy.&lt;/li&gt;
+&lt;li&gt;Text reflow: preserve fenced content when a fence-like line has trailing text, and require valid Markdown numbered-list markers before rewriting lists.&lt;/li&gt;
+&lt;li&gt;Text cleanup: preserve literal path characters and home expansion, keep placeholder-like text intact when preserving blank lines, and recognize CRLF/CR command continuations.&lt;/li&gt;
+&lt;li&gt;Previews: mark removals correctly around emoji and inserted characters, and use the real cleanup engine for sensitivity examples.&lt;/li&gt;
+&lt;li&gt;Shortcuts: keep cleared paste shortcuts unset across restarts and show recorded function keys and keyboard-layout equivalents correctly in the menu.&lt;/li&gt;
+&lt;li&gt;CLI: correctly read &lt;code&gt;--trim -&lt;/code&gt; from stdin, keep short options such as &lt;code&gt;-f&lt;/code&gt; separate from file input, and report invalid arguments instead of silently ignoring them.&lt;/li&gt;
+&lt;li&gt;CLI installer: keep the app responsive during authorization and install correctly from paths containing shell characters, without a shared temporary script.&lt;/li&gt;
+&lt;li&gt;App lifecycle: release Accessibility polling and system copy-event hooks when their owners go away and disable Sparkle in signed development builds.&lt;/li&gt;
+&lt;li&gt;Build compatibility: Swift 6.3 or later is now required because Swift 6.2.4 crashes while compiling the updated shortcut dependency&amp;#x27;s isolated deinitializers; macOS 15 support is unchanged.&lt;/li&gt;
+&lt;li&gt;Dependencies: update KeyboardShortcuts to 3.0.1 for Swift 6 concurrency and release-build fixes.&lt;/li&gt;
+&lt;li&gt;Build: validate macOS and Linux with Swift 6.3 and 6.3.3, pin Actions and lint tools, and run portable text and packaging-script tests in CI.&lt;/li&gt;
+&lt;li&gt;Website: remove stale release numbers from download and social-card labels and clarify that clipboard processing stays local.&lt;/li&gt;
+&lt;li&gt;Development: reuse SwiftPM builds when packaging the debug app, simplify signed shortcut-resource packaging, and replace the obsolete Xcode project with the supported &lt;code&gt;Package.swift&lt;/code&gt; workflow.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md"&gt;View full changelog&lt;/a&gt;&lt;/p&gt;
+</description>
+      <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.11.1/Trimmy-0.11.1.zip" length="2781031" type="application/octet-stream" sparkle:edSignature="sArVr/0RaXOtM3g+Qhy/OYS7rq9/mdr9xWSo5w5cehBLfFxjmXFIAjU27I+XnYahtxrG2LmbWeKU+91/K0y+DA==" />
+    </item>
+    <item>
+      <title>0.11.0</title>
+      <pubDate>Mon, 07 Sep 2026 03:08:40 -0700</pubDate>
+      <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
+      <sparkle:version>33</sparkle:version>
+      <sparkle:shortVersionString>0.11.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+      <description>&lt;h2&gt;Trimmy 0.11.0&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Highlights:&lt;/strong&gt; Optional automatic reflow for copied prose and Markdown.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Join hard-wrapped prose and Markdown automatically with a new default-off setting, respecting app/site exclusions and preserving fenced examples before command cleanup (thanks @rewtraw).&lt;/li&gt;
+&lt;li&gt;Expand the manual action to Paste Reflowed Text, with shared checks that leave recognized source code and configuration out of both reflow paths (thanks @rewtraw).&lt;/li&gt;
+&lt;li&gt;Add optional removal of leading blank lines during reflow, disabled by default to preserve existing paste behavior (thanks @rewtraw).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md"&gt;View full changelog&lt;/a&gt;&lt;/p&gt;
+</description>
+      <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.11.0/Trimmy-0.11.0.zip" length="2705702" type="application/octet-stream" sparkle:edSignature="oCr2DbV0RzO7mPbDY7CGEHIynTJuO8MJ+GHqfNaU48BM5ixUHIMP3L8DoTcXWvx1dutFthFiLWIASfUkPFvMCQ==" />
+    </item>
+    <item>
+      <title>0.10.2</title>
+      <pubDate>Sun, 06 Sep 2026 18:38:09 -0700</pubDate>
+      <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
+      <sparkle:version>32</sparkle:version>
+      <sparkle:shortVersionString>0.10.2</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+      <description>&lt;h2&gt;Trimmy 0.10.2&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Highlights:&lt;/strong&gt; Safer automatic updates and clipboard handling.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Dependencies: update Sparkle to 2.9.6 for installer security fixes and MenuBarExtraAccess to 1.3.1 for macOS 27 compatibility.&lt;/li&gt;
+&lt;li&gt;Terminal detection now recognizes cmux by bundle identifier and app name, so copies use terminal-specific trimming (thanks @gustavosmendes).&lt;/li&gt;
+&lt;li&gt;Preserve YAML block-scalar indentation during automatic trimming in the app and CLI (thanks @rewtraw).&lt;/li&gt;
+&lt;li&gt;Dependencies: update KeyboardShortcuts to 2.4.0 for shortcut-recorder fixes while preserving Swift 6.2 compatibility.&lt;/li&gt;
+&lt;li&gt;Build: validate macOS builds with Swift 6.2.4 while retaining Swift 6.2 and macOS 15 support.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md"&gt;View full changelog&lt;/a&gt;&lt;/p&gt;
+</description>
+      <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.10.2/Trimmy-0.10.2.zip" length="2698560" type="application/octet-stream" sparkle:edSignature="UtW+Y368KUZBXpp12CrmpcGiKG0JHhePPT3p0kX3ad/LywmVzkNGZYrDw5zevaBQcGnE8SpMeHYSUh+83GlfDg==" />
+    </item>
+    <item>
+      <title>0.10.1</title>
+      <pubDate>Thu, 11 Jun 2026 09:50:47 +0100</pubDate>
+      <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
+      <sparkle:version>31</sparkle:version>
+      <sparkle:shortVersionString>0.10.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <description>&lt;h2&gt;Trimmy 0.10.1&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Settings: reorganize controls into focused General, Trimming, Rules, Shortcuts, Advanced, and About tabs, with low-frequency cleanup options under Advanced and a compact native macOS layout.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md"&gt;View full changelog&lt;/a&gt;&lt;/p&gt;
+</description>
+      <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.10.1/Trimmy-0.10.1.zip" length="2687415" type="application/octet-stream" sparkle:edSignature="SfG1mbQVjDbLr/pEMTKBWhgbVOT2YcWLDqdlDutIfRENpWZe0XRJ/Al2jBSC74pwP4IG8f5l6Iju6zA/TTdnAA==" />
+    </item>
+    <item>
+      <title>0.10.0</title>
+      <pubDate>Thu, 11 Jun 2026 08:22:07 +0100</pubDate>
+      <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
+      <sparkle:version>30</sparkle:version>
+      <sparkle:shortVersionString>0.10.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <description>&lt;h2&gt;Trimmy 0.10.0&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Auto-trim can now be disabled for configured apps and browser sites while keeping manual paste actions available (#15).&lt;/li&gt;
+&lt;li&gt;Menu: add an optional “Paste without Query Params” action for copied URLs, gated by Settings → General and preserving configured content-identity parameters (#27, thanks @danfooo).&lt;/li&gt;
+&lt;li&gt;Menu paste-action badges now show a single clear character count instead of duplicate “trimmed” counters (#27, thanks @danfooo).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md"&gt;View full changelog&lt;/a&gt;&lt;/p&gt;
+</description>
+      <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.10.0/Trimmy-0.10.0.zip" length="2679478" type="application/octet-stream" sparkle:edSignature="xACHr2XqXIQIDeLFHQqRvg9FZC9UCtFzuvC50guWk/kxa2uDXYXpN6Fx8Pob9PIAIkELdkNu6Jm27VwxfWFcDw==" />
+    </item>
+    <item>
+      <title>0.9.0</title>
+      <pubDate>Mon, 11 May 2026 12:56:20 +0100</pubDate>
+      <link>https://raw.githubusercontent.com/steipete/Trimmy/main/appcast.xml</link>
+      <sparkle:version>29</sparkle:version>
+      <sparkle:shortVersionString>0.9.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <description>&lt;h2&gt;Trimmy 0.9.0&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Claude Code: add optional prompt-decoration flattening for copied slash commands while preserving ordinary wrapped prose (#19, thanks @evoleinik).&lt;/li&gt;
+&lt;li&gt;Settings: add an option to hide the menu bar icon while keeping Trimmy running (#24, thanks @qazi0).&lt;/li&gt;
+&lt;li&gt;Text cleanup: dedent copied prose where most paragraph lines share the same leading whitespace (#10, thanks @arunsathiya).&lt;/li&gt;
+&lt;li&gt;Website: add a copy button for the Homebrew install command.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="https://github.com/steipete/Trimmy/blob/main/CHANGELOG.md"&gt;View full changelog&lt;/a&gt;&lt;/p&gt;
+</description>
+      <enclosure url="https://github.com/steipete/Trimmy/releases/download/v0.9.0/Trimmy-0.9.0.zip" length="2630308" type="application/octet-stream" sparkle:edSignature="2aCjCUymQxStjqJcjeIs0LcYjRZGTLA4I2UaTTfIKXscC7TDLkQPBG1t80Qzfpna+0npJMS/OS8Uw2XnxFFQBQ==" />
+    </item>
+    <title>Trimmy</title>
+  </channel>
 </rss>
